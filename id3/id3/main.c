@@ -8,87 +8,45 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <getopt.h>
 
-/* Flag set by `--verbose'. */
-static int verbose_flag;
+//fopen('fileName', 'mode')
+    //return a FILE *
+        //Don't worry about it
+//fclose(FILE*)
 
-int
-main (int argc, char *argv[])
+//if(fopen("file", "r")==NULL)
+    //Checks to make sure that the file is able to be read
+    //If it is null, print an error
+//Mode String
+    //"r" open for reading, if file does not exist, return null
+    //"w" open for writing, if it doesn't exist, create it, if it does, overright it
+        //Always creates a new empty file
+    //"a" append to the end of the file
+    //"r+"open for reading and writing, if it does not exist, returns null
+    //"w+"open for reading and writing, if it does not exist, creates it, if it does over writes it
+    //"a+" reads and appends
+    //b and t suffix
+        //In unix it is exactly the same, in windows no
+        //Deals with how the new line (\n) is dealt with, t replaces 10 and 13 and replaces it with \n
+        //B just deals with it how it is
+//Text Opperations
+        //fprintf(FILE *) Writes out to the file insead of the screen
+        //fscanf() Gives user prompt to write to file
+//fread(void*, size,count,FILE*)
+//fwrite(void*, size,count,FILE*)
+    //Cannot dereference a void pointer
+    //fread(&tag,sizeof(tag), 1,f)
+//fseek(FILE*,offset, origin)
+    //origins
+        //SEEK_SET set file pointer to offset
+        //SEEK_CUR add offset to filepointer
+        //SEEK_END Goes back offset number of byte from the end
+        //fseek(f,-128,SEEK_END) WE WILL USE THIS
+int main(int argc, char *argv[])
 {
-    int a,b,s;
-    while (1)
-    {
-        static struct option long_options[] =
-                {
-                        /* This option set a flag. */
-                        {"verbose", 0,NULL, 'v'},
-                        /* These options don't set a flag.
-                           We distinguish them by their indices. */
-                        {"blip",    1,       NULL, 'b'},
-                        {"slip",    1,       NULL, 's'},
-                        {"alip",    1,       NULL, 'a'},
-                        {NULL,         0, NULL,  0}
-                };
-        /* getopt_long stores the option index here. */
-        int option_index = 0;
-
-        int c = getopt_long (argc, argv, "bsa", long_options, &option_index);
-
-        /* Detect the end of the options. */
-        if (c == -1)
-            break;
-
-        switch (c)
-        {
-            case 0:
-                /* If this option set a flag, do nothing else now. */
-                if (long_options[option_index].flag != 0)
-                    break;
-                printf ("option %s", long_options[option_index].name);
-                if (optarg)
-                    printf (" with arg %s", optarg);
-                printf ("\n");
-                break;
-            case 'b':
-                puts ("option -b\n");
-                b=1;
-                break;
-
-            case 's':
-                puts ("option -s\n");
-                break;
-            case 'a':
-                puts ("option -a\n");
-                a=1;
-                break;
-            case '?':
-                /* getopt_long already printed an error message. */
-                break;
-
-            default:
-                abort ();
-        }
+    int i = 0;
+    for (i = 0; i < argc; i++) {
+        printf("argv[%d] = %s\n", i, argv[i]);
     }
-
-    if (verbose_flag)
-        puts ("verbose flag is set");
-
-    if (optind < argc)
-    {
-        //printf ("non-option ARGV-elements: ");
-        printf("Song Name: %s \n", argv[optind++]);
-        if(b){
-            printf ("Song Year: %s \n", argv[optind++]);
-
-        }
-        if(a){
-            printf ("Artist: %s \n", argv[optind++]);
-        }
-
-
-    }
-
     return 0;
 }
-
