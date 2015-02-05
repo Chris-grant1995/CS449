@@ -43,30 +43,32 @@
         //SEEK_CUR add offset to filepointer
         //SEEK_END Goes back offset number of byte from the end
         //fseek(f,-128,SEEK_END) WE WILL USE THIS
+struct song{
+    char tag[3];
+    char songTitle[30];
+    char songArtist[30];
+    char songAlbum[30];
+    char songYear[4];
+    char comment[28];
+    char zero;
+    char track;
+    char genre;
+
+};
 int main(int argc, char *argv[])
 {
     int i = 0;
     FILE * f;
+    int tagFound=0;
     int title=0;
     int artist=0;
     int album =0;
     int year=0;
     int comment=0;
     int track=0;
-    struct song{
-        char tag[3];
-        char songTitle[30];
-        char songArtist[30];
-        char songAlbum[30];
-        char songYear[4];
-        char comment[28];
-        int zero;
-        int track;
-        int genre;
 
-    };
     struct song s;
-    char buffer[128];
+    //char buffer[128];
     /*for (i = 0; i < argc; i++) {
         printf("argv[%d] = %s\n", i, argv[i]);
     }
@@ -78,49 +80,29 @@ int main(int argc, char *argv[])
         return 0;
     }
     fseek(f,-128, SEEK_END);
-    fread(buffer,128,1,f);
+    fread(&s,128,1,f);
+
+    if(strncmp(s.tag, "TAG",3)==0)
+    {
+        tagFound=1;
+    }
+
     if(argc==2)
     {
-        for(i=0; i<3; i++)
+        //printf("%s\n", s.tag);
+        if(!tagFound)
         {
-            s.tag[i]=buffer[i];
-        }
-        printf("%s\n",s.tag );
-        if(strcmp(s.tag, "TAG")!=0)
-        {
-            printf("No Metadata found\n");
+            printf("No metadata found\n");
             return 0;
         }
-        for(i=0; i<30; i++)
-        {
-            s.songTitle[i]=buffer[i+3];
-        }
-        printf("Song Title: %s\n", s.songTitle);
-        for(i=0; i<30; i++)
-        {
-            s.songArtist[i]=buffer[i+33];
-        }
-        printf("Song Artist: %s\n", s.songArtist);
-        for(i=0; i<30; i++)
-        {
-            s.songAlbum[i]=buffer[i+63];
-        }
-        printf("Song Album: %s\n", s.songAlbum);
-        for(i=0; i<4; i++)
-        {
-            s.songYear[i]=buffer[i+93];
-        }
-        printf("Song Album: %s\n", s.songYear);
-        for(i=0; i<28; i++)
-        {
-            s.comment[i]=buffer[i+97];
-        }
-        printf("Comments: %s\n", s.comment);
-        s.zero=atoi(&buffer[125]);
-        s.track=atoi(&buffer[126]);
-        s.genre= atoi(&buffer[127]);
-        printf("Track Number: %d\n", s.track);
 
+        printf("Song Title: %s\n", s.songTitle);
+        printf("Song Artist: %s\n", s.songArtist);
+        printf("Song Album: %s\n", s.songAlbum);
+        //strcat(s.songYear, '\0');
+        printf("Song Year: %.4s\n", s.songYear);
+        printf("Song Comment: %s\n", s.comment);
+        printf("Track Number: %d\n", s.track);
     }
     else{
         for(i=0; i<argc; i++)
@@ -157,13 +139,30 @@ int main(int argc, char *argv[])
             }
             else if(strcmp(argv[i], "track")==0)
             {
-                s.track=argv[++i];
+                s.track=atoi(argv[++i]);
                 track=1;
                 printf("Track Number: %d\n", s.track);
             }
 
         }
+        if(tagFound)
+        {
+            fseek(f,-128, SEEK_END);
+            fwrite(&s, 128, 1, f);
+        }
+        else
+        {
+            f=fopen(argv[1], "ab");
+            strcpy(s.tag, "TAG");
+            s.zero=0;
+            s.genre=0;
+            fseek(f,0, SEEK_END);
+            fwrite(&s, 128, 1, f);
+        }
+
+
     }
+
 
     fclose(f);
 //cp ~jrmst106/public/cs449/*.ogg .
