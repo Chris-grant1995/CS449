@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 //fopen('fileName', 'mode')
     //return a FILE *
@@ -58,6 +59,7 @@ struct song{
 int main(int argc, char *argv[])
 {
     int i = 0;
+    int x=0;
     FILE * f;
     int tagFound=0;
     int title=0;
@@ -96,50 +98,109 @@ int main(int argc, char *argv[])
             return 0;
         }
 
-        printf("Song Title: %s\n", s.songTitle);
-        printf("Song Artist: %s\n", s.songArtist);
-        printf("Song Album: %s\n", s.songAlbum);
+        printf("Song Title: %.30s\n", s.songTitle);
+        printf("Song Artist: %.30s\n", s.songArtist);
+        printf("Song Album: %.30s\n", s.songAlbum);
         //strcat(s.songYear, '\0');
         printf("Song Year: %.4s\n", s.songYear);
-        printf("Song Comment: %s\n", s.comment);
-        printf("Track Number: %d\n", s.track);
+        printf("Song Comment: %.28s\n", s.comment);
+        printf("Track Number: %.1d\n", s.track);
     }
     else{
         for(i=0; i<argc; i++)
         {
             if(strcmp(argv[i], "title")==0)
             {
-                strcpy(s.songTitle, argv[++i]);
+                if(strlen(argv[++i])>=30)
+                {
+                    //printf("True\n");
+                    for(x =0; x<30;x++)
+                    {
+                            s.songTitle[x]=argv[i][x];
+
+
+                    }
+                }
+                else{
+                    strcpy(s.songTitle, argv[i]);
+                }
+
                 title=1;
                 printf("Song Title: %s\n", s.songTitle);
             }
             else if(strcmp(argv[i], "artist")==0)
             {
-                strcpy(s.songArtist, argv[++i]);
+                if(strlen(argv[++i])>=30)
+                {
+                    //printf("True\n");
+                    for(x =0; x<30;x++)
+                    {
+                        s.songArtist[x]=argv[i][x];
+                    }
+                }
+                else{
+                    strcpy(s.songArtist, argv[i]);
+                }
                 artist=1;
                 printf("Song Artist: %s\n", s.songArtist);
             }
             else if(strcmp(argv[i], "album")==0)
             {
-                strcpy(s.songAlbum, argv[++i]);
+                if(strlen(argv[++i])>=30)
+                {
+                    //printf("True\n");
+                    for(x =0; x<30;x++)
+                    {
+                        s.songAlbum[x]=argv[i][x];
+                    }
+                }
+                else{
+                    strcpy(s.songAlbum, argv[i]);
+                }
                 album=1;
                 printf("Song Album: %s\n", s.songAlbum);
             }
             else if(strcmp(argv[i], "year")==0)
             {
-                strcpy(s.songYear, argv[++i]);
+                if(strlen(argv[++i])>=4)
+                {
+                    //printf("True\n");
+                    for(x =0; x<4;x++)
+                    {
+                        s.songYear[x]=argv[i][x];
+                    }
+                }
+                else{
+                    strcpy(s.songYear, argv[i]);
+                }
+                //strcpy(s.songYear, argv[++i]);
                 year=1;
                 printf("Song Year: %s\n", s.songYear);
+
             }
             else if(strcmp(argv[i], "comment")==0)
             {
-                strcpy(s.comment, argv[++i]);
+                if(strlen(argv[++i])>=28)
+                {
+                    //printf("True\n");
+                    for(x =0; x<28;x++)
+                    {
+                        s.comment[x]=argv[i][x];
+                    }
+                }
+                else{
+                    strcpy(s.comment, argv[i]);
+                }
                 comment=1;
                 printf("Song Comment: %s\n", s.comment);
             }
             else if(strcmp(argv[i], "track")==0)
             {
                 s.track=atoi(argv[++i]);
+                if(s.track> CHAR_MAX)
+                {
+                    s.track= 0;
+                }
                 track=1;
                 printf("Track Number: %d\n", s.track);
             }
@@ -153,9 +214,53 @@ int main(int argc, char *argv[])
         else
         {
             f=fopen(argv[1], "ab");
-            strcpy(s.tag, "TAG");
-            s.zero=0;
-            s.genre=0;
+            s.tag[0]='T';
+            s.tag[1]='A';
+            s.tag[2]='G';
+            s.zero='\0';
+            s.genre='\0';
+            if(!title)
+            {
+                for(i=0; i<30;i++)
+                {
+                    s.songTitle[i]='\0';
+                }
+
+            }
+            if(!artist)
+            {
+                for(i=0; i<30;i++)
+                {
+                    s.songArtist[i]='\0';
+                }
+            }
+            if(!album)
+            {
+                for(i=0; i<30;i++)
+                {
+                    s.songAlbum[i]='\0';
+                }
+            }
+            if(!year)
+            {
+                for(i=0; i<30;i++)
+                {
+                    s.songYear[i]='\0';
+                }
+            }
+            if(!comment)
+            {
+                for(i=0; i<30;i++)
+                {
+                    s.comment[i]='\0';
+                }
+            }
+            if(!track)
+            {
+                s.track='\0';
+            }
+
+            //printf()
             fseek(f,0, SEEK_END);
             fwrite(&s, 128, 1, f);
         }
