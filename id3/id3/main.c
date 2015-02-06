@@ -217,13 +217,13 @@ int main(int argc, char *argv[])
             s.tag[0]='T';
             s.tag[1]='A';
             s.tag[2]='G';
-            s.zero='\0';
-            s.genre='\0';
+            s.zero=0;
+            s.genre=0;
             if(!title)
             {
                 for(i=0; i<30;i++)
                 {
-                    s.songTitle[i]='\0';
+                    s.songTitle[i]=0;
                 }
 
             }
@@ -231,33 +231,33 @@ int main(int argc, char *argv[])
             {
                 for(i=0; i<30;i++)
                 {
-                    s.songArtist[i]='\0';
+                    s.songArtist[i]=0;
                 }
             }
             if(!album)
             {
                 for(i=0; i<30;i++)
                 {
-                    s.songAlbum[i]='\0';
+                    s.songAlbum[i]=0;
                 }
             }
             if(!year)
             {
                 for(i=0; i<30;i++)
                 {
-                    s.songYear[i]='\0';
+                    s.songYear[i]=0;
                 }
             }
             if(!comment)
             {
                 for(i=0; i<30;i++)
                 {
-                    s.comment[i]='\0';
+                    s.comment[i]=0;
                 }
             }
             if(!track)
             {
-                s.track='\0';
+                s.track=0;
             }
 
             //printf()
