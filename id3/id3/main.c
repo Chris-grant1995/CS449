@@ -197,10 +197,7 @@ int main(int argc, char *argv[])
             else if(strcmp(argv[i], "track")==0)
             {
                 s.track=atoi(argv[++i]);
-                if(s.track> CHAR_MAX)
-                {
-                    s.track= 0;
-                }
+                
                 track=1;
                 printf("Track Number: %d\n", s.track);
             }
