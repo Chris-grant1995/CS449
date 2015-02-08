@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <limits.h>
+
 
 //fopen('fileName', 'mode')
     //return a FILE *
@@ -107,6 +107,7 @@ int main(int argc, char *argv[])
         printf("Track Number: %.1d\n", s.track);
     }
     else{
+        printf("Modified ID3 Tags: \n")
         for(i=0; i<argc; i++)
         {
             if(strcmp(argv[i], "title")==0)
@@ -126,7 +127,7 @@ int main(int argc, char *argv[])
                 }
 
                 title=1;
-                printf("Song Title: %s\n", s.songTitle);
+                printf("Song Title: %.30s\n", s.songTitle);
             }
             else if(strcmp(argv[i], "artist")==0)
             {
@@ -142,7 +143,7 @@ int main(int argc, char *argv[])
                     strcpy(s.songArtist, argv[i]);
                 }
                 artist=1;
-                printf("Song Artist: %s\n", s.songArtist);
+                printf("Song Artist: %.30s\n", s.songArtist);
             }
             else if(strcmp(argv[i], "album")==0)
             {
@@ -158,7 +159,7 @@ int main(int argc, char *argv[])
                     strcpy(s.songAlbum, argv[i]);
                 }
                 album=1;
-                printf("Song Album: %s\n", s.songAlbum);
+                printf("Song Album: %.30s\n", s.songAlbum);
             }
             else if(strcmp(argv[i], "year")==0)
             {
@@ -175,7 +176,7 @@ int main(int argc, char *argv[])
                 }
                 //strcpy(s.songYear, argv[++i]);
                 year=1;
-                printf("Song Year: %s\n", s.songYear);
+                printf("Song Year: %.4s\n", s.songYear);
 
             }
             else if(strcmp(argv[i], "comment")==0)
@@ -192,14 +193,14 @@ int main(int argc, char *argv[])
                     strcpy(s.comment, argv[i]);
                 }
                 comment=1;
-                printf("Song Comment: %s\n", s.comment);
+                printf("Song Comment: %.28s\n", s.comment);
             }
             else if(strcmp(argv[i], "track")==0)
             {
                 s.track=atoi(argv[++i]);
                 
                 track=1;
-                printf("Track Number: %d\n", s.track);
+                printf("Track Number: %.1d\n", s.track);
             }
 
         }
