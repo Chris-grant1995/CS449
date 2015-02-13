@@ -5,45 +5,11 @@
 //  Created by Chris Grant on 1/30/15.
 //  Copyright (c) 2015 Chris Grant. All rights reserved.
 //
-
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 
 
-//fopen('fileName', 'mode')
-    //return a FILE *
-        //Don't worry about it
-//fclose(FILE*)
-
-//if(fopen("file", "r")==NULL)
-    //Checks to make sure that the file is able to be read
-    //If it is null, print an error
-//Mode String
-    //"r" open for reading, if file does not exist, return null
-    //"w" open for writing, if it doesn't exist, create it, if it does, overright it
-        //Always creates a new empty file
-    //"a" append to the end of the file
-    //"r+"open for reading and writing, if it does not exist, returns null
-    //"w+"open for reading and writing, if it does not exist, creates it, if it does over writes it
-    //"a+" reads and appends
-    //b and t suffix
-        //In unix it is exactly the same, in windows no
-        //Deals with how the new line (\n) is dealt with, t replaces 10 and 13 and replaces it with \n
-        //B just deals with it how it is
-//Text Opperations
-        //fprintf(FILE *) Writes out to the file insead of the screen
-        //fscanf() Gives user prompt to write to file
-//fread(void*, size,count,FILE*)
-//fwrite(void*, size,count,FILE*)
-    //Cannot dereference a void pointer
-    //fread(&tag,sizeof(tag), 1,f)
-//fseek(FILE*,offset, origin)
-    //origins
-        //SEEK_SET set file pointer to offset
-        //SEEK_CUR add offset to filepointer
-        //SEEK_END Goes back offset number of byte from the end
-        //fseek(f,-128,SEEK_END) WE WILL USE THIS
 struct song{
     char tag[3];
     char songTitle[30];
@@ -58,9 +24,12 @@ struct song{
 };
 int main(int argc, char *argv[])
 {
-    int i = 0;
-    int x=0;
+    //For Loop Counter
+    int i = 0; 
+    //Nested for loop counter
+    int x=0; 
     FILE * f;
+    //Essentailly just booleans to be used for files that have no tags 
     int tagFound=0;
     int title=0;
     int artist=0;
@@ -68,51 +37,53 @@ int main(int argc, char *argv[])
     int year=0;
     int comment=0;
     int track=0;
-
     struct song s;
-    //char buffer[128];
-    /*for (i = 0; i < argc; i++) {
-        printf("argv[%d] = %s\n", i, argv[i]);
-    }
-*/
-    f= fopen(argv[1], "r+b");
-    if(f== NULL)
+    //opening binary file for reading and writing 
+    f= fopen(argv[1], "r+b"); 
+    //If the file is not found in the directory specified 
+    if(f== NULL) 
     {
         printf("File Not Found, Please run again with an actual file");
         return 0;
     }
-    fseek(f,-128, SEEK_END);
+    //Setting stream in file to last 128 bytes
+    fseek(f,-128, SEEK_END); 
     fread(&s,128,1,f);
-
-    if(strncmp(s.tag, "TAG",3)==0)
+    //Reading the 128 bytes into the song struct s
+    //Determining if there are tags to be read
+    if(strncmp(s.tag, "TAG",3)==0) 
     {
         tagFound=1;
     }
 
-    if(argc==2)
+    if(argc==2) 
     {
+        //If the user only wants to see the ID3 tags on the file
         //printf("%s\n", s.tag);
         if(!tagFound)
         {
             printf("No metadata found\n");
+            fclose(f);
             return 0;
         }
-
+        //Prints Tag information found on the file
         printf("Song Title: %.30s\n", s.songTitle);
         printf("Song Artist: %.30s\n", s.songArtist);
         printf("Song Album: %.30s\n", s.songAlbum);
-        //strcat(s.songYear, '\0');
         printf("Song Year: %.4s\n", s.songYear);
         printf("Song Comment: %.28s\n", s.comment);
-        printf("Track Number: %.1d\n", s.track);
+        printf("Track Number: %d\n", s.track);
     }
-    else{
-        printf("Modified ID3 Tags: \n")
+    else{ 
+        //If they want to change tags on the file
+        printf("Modified ID3 Tags: \n");
         for(i=0; i<argc; i++)
         {
-            if(strcmp(argv[i], "title")==0)
+            //I have only commented how the title works, but the rest work exactly the same
+            if(strcmp(argv[i], "title")==0)//Checks to see if user wants to modify the title
             {
-                if(strlen(argv[++i])>=30)
+                // If the user entered too many characters, this truncates it down to the max, elminating a null terminator if nesscessary
+                if(strlen(argv[++i])>=30) 
                 {
                     //printf("True\n");
                     for(x =0; x<30;x++)
@@ -122,10 +93,11 @@ int main(int argc, char *argv[])
 
                     }
                 }
+                //If they didnt enter too many characters, 
                 else{
                     strcpy(s.songTitle, argv[i]);
                 }
-
+                //Prints the new title for the song(up to 30 characters because there might not be a null terminator) and sets title to 1, indicating that it has one, in case there are no ID3 tags already on the file
                 title=1;
                 printf("Song Title: %.30s\n", s.songTitle);
             }
@@ -206,17 +178,22 @@ int main(int argc, char *argv[])
         }
         if(tagFound)
         {
+            //If there already is an ID3 tag, simply write the song struct to the last 128 bytes of the file
             fseek(f,-128, SEEK_END);
             fwrite(&s, 128, 1, f);
         }
         else
         {
+            //If there are no tags, we have to append them at the end of the file
             f=fopen(argv[1], "ab");
+            //Set indivdual chars to T A G so there is no null terminator 
             s.tag[0]='T';
             s.tag[1]='A';
             s.tag[2]='G';
+            //Set Zero byte seperator and genre to 0/null
             s.zero=0;
             s.genre=0;
+            //If the user hasn't supplied a value for a field, set it to null, again same logic for every different flag, just length changes 
             if(!title)
             {
                 for(i=0; i<30;i++)
@@ -257,8 +234,7 @@ int main(int argc, char *argv[])
             {
                 s.track=0;
             }
-
-            //printf()
+            //Make sure that the steam is at the end of the file and write an additional 128 byte to it
             fseek(f,0, SEEK_END);
             fwrite(&s, 128, 1, f);
         }
@@ -266,7 +242,7 @@ int main(int argc, char *argv[])
 
     }
 
-
+    //Close the file
     fclose(f);
 //cp ~jrmst106/public/cs449/*.ogg .
 //Command to replace corrupted files

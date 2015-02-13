@@ -1,6 +1,6 @@
 //
 //  main.c
-//  Project1TTT
+//  Project1RPS
 //
 //  Created by Chris Grant on 1/21/15.
 //  Copyright (c) 2015 Chris Grant. All rights reserved.
@@ -96,16 +96,19 @@ int gameLoop() {
 int main() {
     // insert code here...
     char input;
+    srand((unsigned int)time(NULL));
 
     int winner;
     printf("Welcome to Rock Paper Scissors!\n");
-    printf("Would you like to play a best of 5 game?");
+    printf("Would you like to play a best of 5 game?: ");
     scanf("%c",&input);
     //printf("\n%d\n",input);
     if(input == 121 || input==89 )//Lowercase or Uppercase y
     {
         //printf("Ok We are playing");
-        winner=gameLoop();
+        while(input == 121 || input==89)
+        {
+            winner=gameLoop();
         if(winner ==0)
         {
             printf("You Win!\n");
@@ -113,10 +116,19 @@ int main() {
         else{
             printf("The Computer Wins!\n");
         }
+        do {
+            scanf("%c", &input);
+        } while (input != '\n');
+        printf("Would you like to play again? ");
+        scanf("%c",&input);
+        }
+        
+
 
     }
     else{
         printf("Then why did you run it!\n");
     }
+    printf("\nGoodbye\n");
     return 0;
 }
