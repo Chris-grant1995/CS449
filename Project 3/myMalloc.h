@@ -13,18 +13,24 @@ struct node *lNode;//Last Node in LL
 
 
 void * my_malloc(int size){
-	void * returnPointer = NULL;
+	void * returnPointer;
 	struct node tempNode;
-	
-
+	int modResult;
+	returnPointer=NULL;
 
 	if(size>0){
 		int nodeSize= sizeof(struct node);
 		size+=nodeSize;
 
+		modResult = size % 32;
+		if(modResult!=0)
+		{
+			size = size - modResult + 32;
+		}
+
 		if(fNode==NULL)
 		{
-			fNode=sbrk(size);
+			fNode=(struct node*)sbrk(size);
 
 			lNode=fNode;
 			tempNode.nodeSize=size;
@@ -33,7 +39,7 @@ void * my_malloc(int size){
 			tempNode.nNode=NULL;
 			*fNode=tempNode;
 
-			returnPointer= (void *) (fNode + sizeof(tempNode));
+			returnPointer= (void *) ((char*)fNode + sizeof(tempNode));
 		}
 
 		else{//Best Fit Algorithm 
@@ -70,7 +76,7 @@ void * my_malloc(int size){
 				if(perfectFit)
 				{
 					currentBestNode -> used = 1;
-					returnPointer = (void *) (currentBestNode+ sizeof(tempNode));
+					returnPointer = (void *) ((char*)currentBestNode+ sizeof(tempNode));
 				}
 				else{
 					cNode = (struct node *)(currentBestNode+size);
@@ -86,7 +92,7 @@ void * my_malloc(int size){
 					currentBestNode -> used = 1;
 					currentBestNode -> nNode = cNode;
 
-					returnPointer = (void *)(currentBestNode+sizeof(tempNode));
+					returnPointer = (void *)((char*)currentBestNode+sizeof(tempNode));
 				}
 			} 
 			else{
@@ -99,7 +105,7 @@ void * my_malloc(int size){
 				*currentBestNode= tempNode;
 				lNode->nNode= currentBestNode;
 				lNode = currentBestNode;
-				returnPointer = (void *) (currentBestNode+ sizeof(tempNode));
+				returnPointer = (void *) ((char*)currentBestNode+ sizeof(tempNode));
 			}
 		}
 	}
