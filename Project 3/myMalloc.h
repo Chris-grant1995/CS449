@@ -16,7 +16,7 @@ void * my_malloc(int size){
 	void * returnPointer;
 	struct node tempNode;
 	int perfectFit;
-	struct node *cNode
+	struct node *cNode;
 	struct node *currentBestNode;
 	int modResult;
 	int bestsize;
@@ -131,7 +131,7 @@ void my_free(void * p){
 		tempFree = (struct node*)((char*) p-16); //-16 bc of heading 
 		tempPrev = tempFree -> pNode;
 		tempNext = tempFree -> nNode;
-		if(tempNext = NULL){//If Node is at the end of the heap
+		if(tempNext == NULL){//If Node is at the end of the heap
 
 			if(tempPrev == NULL) //If it is the only node in the heap
 			{
@@ -140,11 +140,11 @@ void my_free(void * p){
 				sbrk(0 - tempFree->nodeSize);
 			}
 			else{
-				if(tempPrev -> used)
+				if(tempPrev -> used ==1)
 				{
 					lNode= tempPrev;
 					tempPrev -> nNode=NULL;
-					sbrkAmt = 0 -tempFree->nodeSize;
+					sbrkAmt = 0 - tempFree->nodeSize;
 					sbrk(sbrkAmt);
 				}
 				else{
@@ -153,14 +153,14 @@ void my_free(void * p){
 						fNode=NULL;
 						lNode=NULL;
 						sbrkAmt = 0 -tempFree->nodeSize;
-						sbrkAmt-= tempPrev->nodeSize;
+						sbrkAmt= sbrkAmt-tempPrev->nodeSize;
 						sbrk(sbrkAmt);
 					}
 					else{
 						lNode = tempPrev->pNode;
 						tempPrev->pNode->nNode=NULL;
 						sbrkAmt = 0 -tempFree->nodeSize;
-						sbrkAmt-= tempPrev->nodeSize;
+						sbrkAmt= sbrkAmt-tempPrev->nodeSize;
 						sbrk(sbrkAmt);
 					}
 				}
@@ -174,13 +174,13 @@ void my_free(void * p){
 					{
 						tempPrev->nNode= tempNext->nNode;
 						tempNext->nNode->pNode=tempPrev;
-						tempPrev->nodeSize+=tempFree->nodeSize + tempNext->nodeSize;
+						tempPrev->nodeSize=tempPrev->nodeSize+tempFree->nodeSize + tempNext->nodeSize;
 						tempPrev->used=0;
 					}
 					else{
 						tempPrev->nNode=tempNext;
 						tempNext->pNode=tempPrev;
-						tempPrev->nodeSize+=tempFree->nodeSize;
+						tempPrev->nodeSize=tempPrev->nodeSize+tempFree->nodeSize;
 						tempPrev->used=0;
 
 					}
@@ -189,7 +189,7 @@ void my_free(void * p){
 				{
 					tempFree->nNode=tempNext->nNode;
 					tempNext->nNode->pNode=tempFree;
-					tempFree->nodeSize += tempNext->nodeSize;
+					tempFree->nodeSize =tempFree->nodeSize + tempNext->nodeSize;
 					tempFree->used =0;
 				}
 				else{
@@ -201,7 +201,7 @@ void my_free(void * p){
 				{
 					tempFree->nNode=tempNext->nNode;
 					tempNext->nNode->pNode=tempFree;
-					tempFree->nodeSize+=tempNext->nodeSize;
+					tempFree->nodeSize=tempFree->nodeSize+tempNext->nodeSize;
 					tempFree->used=0;
 				}
 				else{
